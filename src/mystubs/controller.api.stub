@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\{{ model }};
+use App\Http\Requests\Store{{ model }}Request;
+use App\Http\Requests\Update{{ model }}Request;
+use App\Http\Resources\{{ model }}Resource;
+
+class {{ model }}Controller extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        ${{ modelVariable }}s = {{ model }}::all();
+        return $this->successResponse({{ model }}Resource::collection(${{ modelVariable }}s));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\Store{{ model }}Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Store{{ model }}Request $request)
+    {
+        ${{ modelVariable }} = {{ model }}::create($request->validated());
+        return $this->successResponse({{ model }}Resource::make(${{ modelVariable }}));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\{{ model }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     */
+    public function show({{ model }} ${{ modelVariable }})
+    {
+        return $this->successResponse({{ model }}Resource::make(${{ modelVariable }}));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\Update{{ model }}Request  $request
+     * @param  \App\Models\{{ model }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Update{{ model }}Request $request, {{ model }} ${{ modelVariable }})
+    {
+        ${{ modelVariable }}->update($request->validated());
+        return $this->successResponse({{ model }}Resource::make(${{ modelVariable }}));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\{{ model }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy({{ model }} ${{ modelVariable }})
+    {
+        ${{ modelVariable }}->delete();
+        return $this->deletedResponse();
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "name": "hossam/licht",
+    "description": "CRUDs generator",
+    "autoload": {
+        "psr-4": {
+            "Hossam\\Licht\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "hossam",
+            "email": "hossamsoliuman@gmail.com"
+        }
+    ],
+    "require": {}
+}
