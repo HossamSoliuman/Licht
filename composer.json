@@ -1,9 +1,9 @@
 {
-    "name": "hossam/licht",
+    "name": "hossamsoliuman/licht",
     "description": "CRUDs generator",
     "autoload": {
         "psr-4": {
-            "Hossam\\Licht\\": "src/"
+            "Hossam\\Licht\\": "licht/src/"
         }
     },
     "authors": [

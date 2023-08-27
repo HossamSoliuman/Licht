@@ -2,7 +2,7 @@
 
 namespace Hossam\Licht\Providers;
 
-use App\Console\Commands\CrudGeneratore;
+use Hossam\Licht\Console\Commands\CrudGenerator;
 use Illuminate\Support\ServiceProvider;
 
 class LichtProvider extends ServiceProvider
@@ -16,8 +16,13 @@ class LichtProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                CrudGeneratore::class,
+                CrudGenerator::class,
             ]);
         }
+    }
+
+    public function register()
+    {
+        $this->app->register(LichtProvider::class);
     }
 }

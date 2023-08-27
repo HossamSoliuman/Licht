@@ -1,6 +1,6 @@
 <?php
 
-namespace Hossam\Licht\Commands;
+namespace Hossam\Licht\Console\Commands;
 
 use Hossam\Licht\Generators\ControllerGeneratore;
 use Illuminate\Console\Command;
