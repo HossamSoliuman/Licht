@@ -1,6 +1,7 @@
 {
     "name": "hossamsoliuman/licht",
     "description": "CRUDs generator",
+    "version": "1.0.0",
     "autoload": {
         "psr-4": {
             "Hossam\\Licht\\": "src/"
