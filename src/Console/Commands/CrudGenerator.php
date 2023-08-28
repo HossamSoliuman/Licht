@@ -2,7 +2,7 @@
 
 namespace Hossam\Licht\Console\Commands;
 
-use Hossam\Licht\Generators\ControllerGeneratore;
+use Hossam\Licht\Generators\ControllerGenerator;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -19,7 +19,7 @@ class CrudGenerator extends Command
 
         $fields = $this->gatherFields();
 
-        $controller = new ControllerGeneratore;
+        $controller = new ControllerGenerator;
         $controller->create($modelName, $fields);
 
         $this->info("CRUD operations generated for {$modelName}.");

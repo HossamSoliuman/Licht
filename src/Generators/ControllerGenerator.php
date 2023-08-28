@@ -5,7 +5,7 @@ namespace Hossam\Licht\Generators;
 use Illuminate\Support\Str;
 
 
-class ControllerGeneratore
+class ControllerGenerator
 {
     public function create($model)
     {
