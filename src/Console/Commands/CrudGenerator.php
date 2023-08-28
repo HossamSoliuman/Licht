@@ -5,7 +5,7 @@ namespace Hossam\Licht\Console\Commands;
 use Hossam\Licht\Generators\ControllerGeneratore;
 use Illuminate\Console\Command;
 
-class CrudGeneratore extends Command
+class CrudGenerator extends Command
 {
     /**
      * The name and signature of the console command.

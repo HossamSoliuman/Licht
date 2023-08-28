@@ -12,5 +12,12 @@
             "email": "hossamsoliuman@gmail.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Hossam\\Licht\\Providers\\LichtProvider"
+            ]
+        }
+    }
 }

@@ -20,9 +20,4 @@ class LichtProvider extends ServiceProvider
             ]);
         }
     }
-
-    public function register()
-    {
-        $this->app->register(LichtProvider::class);
-    }
 }
