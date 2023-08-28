@@ -31,14 +31,14 @@ class CrudGeneratore extends Command
         $isThereMore = 'yes';
         $fields = [];
         while ($isThereMore == 'yes') {
-            $fieledType = $this->choice(
-                'choice field type ',
+            $fieldType = $this->choice(
+                'Choose field type ',
                 ['string', 'integer', 'text', 'foreignId'],
                 0
             );
-            $fieledName = $this->ask('Enter field name', 'name');
+            $fieldName = $this->ask('Enter field name', 'name');
 
-            $fields[$fieledName] = $fieledType;
+            $fields[$fieldName] = $fieldType;
             $isThereMore = $this->choice(
                 'Are there any more fields?',
                 ['yes', 'no'],

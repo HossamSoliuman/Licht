@@ -3,7 +3,7 @@
     "description": "CRUDs generator",
     "autoload": {
         "psr-4": {
-            "Hossam\\Licht\\": "licht/src/"
+            "Hossam\\Licht\\": "src/"
         }
     },
     "authors": [
