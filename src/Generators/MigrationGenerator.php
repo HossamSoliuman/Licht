@@ -12,7 +12,7 @@ class MigrationGenerator
         $migrationClassName = 'Create' . Str::studly($migrationName) . 'Table';
 
         $timestamp = now()->format('Y_m_d_His');
-        $filename = "{$timestamp}_{$migrationName}_table.php";
+        $filename = "create_{$timestamp}_{$migrationName}_table.php";
 
         $stub = file_get_contents(__DIR__ . '/../mystubs/migration.create.stub');
         $stub = str_replace('{{ class }}', $migrationClassName, $stub);
