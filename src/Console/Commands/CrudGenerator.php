@@ -3,6 +3,7 @@
 namespace Hossam\Licht\Console\Commands;
 
 use Hossam\Licht\Generators\ControllerGenerator;
+use Hossam\Licht\Generators\MigrationGenerator;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -15,14 +16,18 @@ class CrudGenerator extends Command
     public function handle()
     {
         $this->info('Welcome to the CRUD Generator');
-        $modelName = $this->argument('name');
 
+        $modelName = $this->argument('name');
         $fields = $this->gatherFields();
 
         $controller = new ControllerGenerator;
         $controller->create($modelName, $fields);
 
-        $this->info("CRUD operations generated for {$modelName}.");
+        $migrationGenerator = new MigrationGenerator;
+        $migrationFilename = $migrationGenerator->create($modelName, $fields);
+
+        $this->line("CRUD operations generated for {$modelName}.");
+        $this->line("Migration created: {$migrationFilename}");
     }
 
     protected function gatherFields()
@@ -33,7 +38,7 @@ class CrudGenerator extends Command
         while ($askForFields) {
             $fieldType = $this->askFieldType();
             $fieldName = $this->ask('Enter field name', 'name');
-            
+
             $fields[$fieldName] = $fieldType;
 
             if (!$this->confirm('Add more fields?', true)) {
