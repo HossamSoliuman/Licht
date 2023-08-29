@@ -19,7 +19,7 @@ class MigrationGenerator
         $stub = str_replace('{{ table }}', $migrationName, $stub);
 
         $fieldDefinitions = '';
-        $lastField = end(array_keys($fields));
+        $lastField = array_key_last($fields);
         foreach ($fields as $fieldName => $fieldType) {
             if ($fieldType === 'foreignId') {
                 $fieldDefinitions .= "\t\t\t\$table->{$fieldType}('{$fieldName}')->constrained()->cascadeOnDelete();";
