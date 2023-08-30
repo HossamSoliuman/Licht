@@ -5,6 +5,7 @@ namespace Hossam\Licht\Console\Commands;
 use Hossam\Licht\Generators\ControllerGenerator;
 use Hossam\Licht\Generators\MigrationGenerator;
 use Hossam\Licht\Generators\ModelGenerator;
+use Hossam\Licht\Generators\RequestsGenerator;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -27,6 +28,9 @@ class CrudGenerator extends Command
         $controller = new ControllerGenerator;
         $controller->create($modelName, $fields);
 
+        $requests = new RequestsGenerator;
+        $requests->create($modelName, $fields);
+        
         $migrationGenerator = new MigrationGenerator;
         $migrationFilename = $migrationGenerator->create($modelName, $fields);
 
