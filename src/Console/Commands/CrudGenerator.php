@@ -2,6 +2,7 @@
 
 namespace Hossam\Licht\Console\Commands;
 
+use App\Licht\Services\ResourceGenerator;
 use Hossam\Licht\Generators\ControllerGenerator;
 use Hossam\Licht\Generators\MigrationGenerator;
 use Hossam\Licht\Generators\ModelGenerator;
@@ -25,12 +26,15 @@ class CrudGenerator extends Command
         $modelGenerator = new ModelGenerator;
         $modelGenerator->create($modelName, $fields);
 
+        $requests = new RequestsGenerator;
+        $requests->create($modelName, $fields);
+
+        $resource = new ResourceGenerator;
+        $resource->create($modelName, $fields);
+
         $controller = new ControllerGenerator;
         $controller->create($modelName, $fields);
 
-        $requests = new RequestsGenerator;
-        $requests->create($modelName, $fields);
-        
         $migrationGenerator = new MigrationGenerator;
         $migrationFilename = $migrationGenerator->create($modelName, $fields);
 
