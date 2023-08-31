@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Licht\Services;
+namespace Hossam\Licht\Generators;
 
 use Illuminate\Support\Str;
 

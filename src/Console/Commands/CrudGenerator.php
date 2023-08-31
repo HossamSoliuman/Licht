@@ -2,7 +2,7 @@
 
 namespace Hossam\Licht\Console\Commands;
 
-use App\Licht\Services\ResourceGenerator;
+use Hossam\Licht\Generators\ResourceGenerator;
 use Hossam\Licht\Generators\ControllerGenerator;
 use Hossam\Licht\Generators\MigrationGenerator;
 use Hossam\Licht\Generators\ModelGenerator;
