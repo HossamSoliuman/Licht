@@ -9,7 +9,6 @@ use Hossam\Licht\Generators\ModelGenerator;
 use Hossam\Licht\Generators\RequestsGenerator;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class CrudGenerator extends Command
 {
@@ -20,26 +19,27 @@ class CrudGenerator extends Command
     {
         $this->info('Welcome to the CRUD Generator');
 
-        $modelName = $this->argument('name');
+        // Get the model name and fields from user input
+        $modelName = $this->getModelName();
         $fields = $this->gatherFields();
 
-        $modelGenerator = new ModelGenerator;
-        $modelGenerator->create($modelName, $fields);
-
-        $requests = new RequestsGenerator;
-        $requests->create($modelName, $fields);
-
-        $resource = new ResourceGenerator;
-        $resource->create($modelName, $fields);
-
-        $controller = new ControllerGenerator;
-        $controller->create($modelName, $fields);
-
-        $migrationGenerator = new MigrationGenerator;
-        $migrationFilename = $migrationGenerator->create($modelName, $fields);
+        // Generate CRUD components
+        $this->generateCrudComponents($modelName, $fields);
 
         $this->line("CRUD operations generated for {$modelName}.");
-        $this->line("Migration created: {$migrationFilename}");
+    }
+
+    protected function getModelName()
+    {
+        // Ask the user for the model name and validate it
+        $modelName = $this->ask('Enter the model name (e.g., Post)', 'Post');
+
+        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $modelName)) {
+            $this->error('Invalid model name. Model names should start with a capital letter and contain only letters.');
+            return $this->getModelName(); // Recursively ask for a valid name
+        }
+
+        return $modelName;
     }
 
     protected function gatherFields()
@@ -48,8 +48,15 @@ class CrudGenerator extends Command
         $askForFields = true;
 
         while ($askForFields) {
+            // Ask for field type and name
             $fieldType = $this->askFieldType();
             $fieldName = $this->ask('Enter field name', 'name');
+
+            // Validate the field name
+            if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $fieldName)) {
+                $this->error('Invalid field name. Field names should start with a letter or underscore and contain only letters, numbers, and underscores.');
+                continue;
+            }
 
             $fields[$fieldName] = $fieldType;
 
@@ -70,5 +77,35 @@ class CrudGenerator extends Command
         );
 
         return $this->choice($question->getQuestion(), $question->getChoices(), 0);
+    }
+
+    protected function generateCrudComponents($modelName, $fields)
+    {
+        $this->info("Generating CRUD components for {$modelName}...");
+
+        // Generate Model
+        $modelGenerator = new ModelGenerator;
+        $modelGenerator->create($modelName, $fields);
+        $this->line("Model created: {$modelName}");
+
+        // Generate Requests
+        $requests = new RequestsGenerator;
+        $requests->create($modelName, $fields);
+        $this->line("Requests created for {$modelName}");
+
+        // Generate Resource
+        $resource = new ResourceGenerator;
+        $resource->create($modelName, $fields);
+        $this->line("Resource created for {$modelName}");
+
+        // Generate Controller
+        $controller = new ControllerGenerator;
+        $controller->create($modelName, $fields);
+        $this->line("Controller created for {$modelName}");
+
+        // Generate Migration
+        $migrationGenerator = new MigrationGenerator;
+        $migrationFilename = $migrationGenerator->create($modelName, $fields);
+        $this->line("Migration created: {$migrationFilename}");
     }
 }
