@@ -9,34 +9,33 @@ use Hossam\Licht\Generators\ModelGenerator;
 use Hossam\Licht\Generators\RequestsGenerator;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Illuminate\Support\Str;
 
 class CrudGenerator extends Command
 {
-    protected $signature = 'licht:model {name}';
+    protected $signature = 'licht:crud {model}';
     protected $description = 'Generate CRUD operations for a model';
 
     public function handle()
     {
-        $this->info('Welcome to the CRUD Generator');
-
-        // Get the model name and fields from user input
         $modelName = $this->getModelName();
+
         $fields = $this->gatherFields();
 
-        // Generate CRUD components
+        $this->displayModelFields($fields);
+
         $this->generateCrudComponents($modelName, $fields);
 
-        $this->line("CRUD operations generated for {$modelName}.");
+        $this->displayGeneratedFiles($modelName);
     }
 
     protected function getModelName()
     {
-        // Ask the user for the model name and validate it
-        $modelName = $this->ask('Enter the model name (e.g., Post)', 'Post');
+        $modelName = ucfirst($this->argument('model'));
 
         if (!preg_match('/^[A-Z][a-zA-Z]*$/', $modelName)) {
             $this->error('Invalid model name. Model names should start with a capital letter and contain only letters.');
-            return $this->getModelName(); // Recursively ask for a valid name
+            exit(1);
         }
 
         return $modelName;
@@ -48,17 +47,17 @@ class CrudGenerator extends Command
         $askForFields = true;
 
         while ($askForFields) {
-            // Ask for field type and name
             $fieldType = $this->askFieldType();
             $fieldName = $this->ask('Enter field name', 'name');
 
-            // Validate the field name
             if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $fieldName)) {
                 $this->error('Invalid field name. Field names should start with a letter or underscore and contain only letters, numbers, and underscores.');
                 continue;
             }
 
             $fields[$fieldName] = $fieldType;
+
+            $this->displayModelFields($fields);
 
             if (!$this->confirm('Add more fields?', true)) {
                 $askForFields = false;
@@ -68,14 +67,30 @@ class CrudGenerator extends Command
         return $fields;
     }
 
+    protected function displayModelFields($fields)
+    {
+        $this->info("\nModel Fields:");
+
+        $this->table(
+            ['Field Name', 'Field Type'],
+            collect($fields)->map(function ($type, $field) {
+                return [$field, $type];
+            })->toArray()
+        );
+    }
+
     protected function askFieldType()
     {
         $question = new ChoiceQuestion(
             'Choose field type',
-            ['string', 'integer', 'text', 'foreignId'],
+            [
+                'string',
+                'integer',
+                'text',
+                'foreignId',
+            ],
             0
         );
-
         return $this->choice($question->getQuestion(), $question->getChoices(), 0);
     }
 
@@ -83,29 +98,44 @@ class CrudGenerator extends Command
     {
         $this->info("Generating CRUD components for {$modelName}...");
 
-        // Generate Model
-        $modelGenerator = new ModelGenerator;
-        $modelGenerator->create($modelName, $fields);
-        $this->line("Model created: {$modelName}");
+        $generators = [
+            'Model' => new ModelGenerator,
+            'Requests' => new RequestsGenerator,
+            'Resource' => new ResourceGenerator,
+            'Controller' => new ControllerGenerator,
+            'Migration' => new MigrationGenerator,
+        ];
 
-        // Generate Requests
-        $requests = new RequestsGenerator;
-        $requests->create($modelName, $fields);
-        $this->line("Requests created for {$modelName}");
+        foreach ($generators as $generator) {
+            $generator->create($modelName, $fields);
+        }
+    }
 
-        // Generate Resource
-        $resource = new ResourceGenerator;
-        $resource->create($modelName, $fields);
-        $this->line("Resource created for {$modelName}");
+    protected function displayGeneratedFiles($modelName)
+    {
+        $this->info("\nGenerated files for {$modelName}:");
 
-        // Generate Controller
-        $controller = new ControllerGenerator;
-        $controller->create($modelName, $fields);
-        $this->line("Controller created for {$modelName}");
+        $generators = [
+            'Model' => app_path("Models/{$modelName}.php"),
+            'Store Request' => app_path("Http/Requests/Store{$modelName}Request.php"),
+            'Update Request' => app_path("Http/Requests/Update{$modelName}Request.php"),
+            'Resource' => app_path("Http/Resources/{$modelName}Resource.php"),
+            'Controller' => app_path("Http/Controllers/{$modelName}Controller.php"),
+            'Migration' => database_path("migrations/{$this->getMigrationFileName($modelName)}"),
+        ];
 
-        // Generate Migration
-        $migrationGenerator = new MigrationGenerator;
-        $migrationFilename = $migrationGenerator->create($modelName, $fields);
-        $this->line("Migration created: {$migrationFilename}");
+        $this->table(
+            ['Component', 'Path'],
+            collect($generators)->map(function ($path, $component) {
+                return [$component, $path];
+            })->toArray(),
+            'box'
+        );
+    }
+
+    protected function getMigrationFileName($modelName)
+    {
+        $timestamp = now()->format('Y_m_d_His');
+        return "{$timestamp}_create_" . Str::snake(Str::plural($modelName)) . "_table.php";
     }
 }

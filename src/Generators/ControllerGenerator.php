@@ -16,5 +16,6 @@ class ControllerGenerator
         $stub = str_replace('{{ modelVariable }}', $modelVariable, $stub);
         $path = app_path("Http/Controllers/{$fileName}");
         file_put_contents($path, $stub);
+        return $fileName;
     }
 }
