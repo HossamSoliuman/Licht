@@ -28,6 +28,7 @@ class RequestsGenerator
 
         file_put_contents($storePath, $storeStub);
         file_put_contents($updatePath, $updateStub);
+        return ['storeFile' => $storeClass, 'updateFile' => $updateClass];
     }
 
     private function generateRules($fields, $requiredOrNullable)
@@ -47,7 +48,7 @@ class RequestsGenerator
                 $rules .= "\n";
             }
         }
-        
+
         return $rules;
     }
 

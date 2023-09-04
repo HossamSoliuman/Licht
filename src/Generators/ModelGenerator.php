@@ -49,5 +49,6 @@ class ModelGenerator
 
         $path = app_path("Models/{$fileName}");
         file_put_contents($path, $stub);
+        return $fileName;
     }
 }

@@ -18,7 +18,6 @@ class ResourceGenerator
             if ($fieldType === 'foreignId') {
                 $relatedResource = $this->getRelatedResourceName($fieldName);
                 $columns .= "\t\t\t'{$this->getRelatedModelName($fieldName)}' => {$relatedResource}::make(\$this->whenLoaded('{$this->getRelatedModelName($fieldName)}')),";
-                // 'user' => UserResource::make($this->whenLoaded('user')),
             } else {
                 $columns .= "\t\t\t'{$fieldName}' => $" . "this->{$fieldName},";
             }
@@ -31,6 +30,7 @@ class ResourceGenerator
         $stub = str_replace('{{ fields }}', $columns, $stub);
         $path = app_path("Http/Resources/{$fileName}");
         file_put_contents($path, $stub);
+        return $fileName;
     }
 
     private function getRelatedResourceName($foreignKey)
