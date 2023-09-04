@@ -2,8 +2,11 @@
 
 namespace Hossam\Licht\Console\Commands;
 
+use Hossam\Licht\Generators\ResourceGenerator;
 use Hossam\Licht\Generators\ControllerGenerator;
 use Hossam\Licht\Generators\MigrationGenerator;
+use Hossam\Licht\Generators\ModelGenerator;
+use Hossam\Licht\Generators\RequestsGenerator;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -19,6 +22,15 @@ class CrudGenerator extends Command
 
         $modelName = $this->argument('name');
         $fields = $this->gatherFields();
+
+        $modelGenerator = new ModelGenerator;
+        $modelGenerator->create($modelName, $fields);
+
+        $requests = new RequestsGenerator;
+        $requests->create($modelName, $fields);
+
+        $resource = new ResourceGenerator;
+        $resource->create($modelName, $fields);
 
         $controller = new ControllerGenerator;
         $controller->create($modelName, $fields);
