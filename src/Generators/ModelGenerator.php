@@ -16,7 +16,6 @@ class ModelGenerator
         $fillables = '';
         $relations = '';
         $lastField = array_key_last($fields);
-
         foreach ($fields as $fieldName => $fieldType) {
             $fillables .= "\t\t\t'{$fieldName}',";
             if ($fieldName !== $lastField) {

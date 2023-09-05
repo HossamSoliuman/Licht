@@ -15,19 +15,13 @@ class MigrationGenerator
         $filename = "{$timestamp}_create_{$migrationName}_table.php";
 
         $stub = file_get_contents(__DIR__ . '/../mystubs/migration.create.stub');
-        $stub = str_replace('{{ class }}', $migrationClassName, $stub);
-        $stub = str_replace('{{ table }}', $migrationName, $stub);
+        $stub = str_replace(['{{ class }}', '{{ table }}'], [$migrationClassName, $migrationName], $stub);
 
         $fieldDefinitions = '';
         $lastField = array_key_last($fields);
         foreach ($fields as $fieldName => $fieldType) {
-            if ($fieldType === 'foreignId') {
-                $fieldDefinitions .= "\t\t\t\$table->{$fieldType}('{$fieldName}')->constrained()->cascadeOnDelete();";
-            } elseif (Str::contains($fieldType, ['file', 'image'])) {
-                $fieldDefinitions .= "\t\t\t\$table->string('{$fieldName}');";
-            } else {
-                $fieldDefinitions .= "\t\t\t\$table->{$fieldType}('{$fieldName}');";
-            }
+            $fieldMethod = $this->getFieldMethod($fieldType);
+            $fieldDefinitions .= "\t\t\t\$table->{$fieldMethod}('{$fieldName}');";
             if ($fieldName !== $lastField) {
                 $fieldDefinitions .= "\n";
             }
@@ -38,5 +32,18 @@ class MigrationGenerator
         file_put_contents($path, $stub);
 
         return $filename;
+    }
+
+    private function getFieldMethod($fieldType)
+    {
+        $typeMap = [
+            'foreignId' => 'foreignId',
+            'image' => 'string',
+            'file' => 'string',
+            'date' => 'date',
+            'datetime' => 'dateTime',
+        ];
+
+        return $typeMap[$fieldType] ?? $fieldType;
     }
 }

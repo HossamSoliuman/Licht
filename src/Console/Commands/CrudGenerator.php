@@ -15,6 +15,7 @@ class CrudGenerator extends Command
 {
     protected $signature = 'licht:crud {model}';
     protected $description = 'Generate CRUD operations for a model';
+    protected $migrationName;
 
     public function handle()
     {
@@ -89,7 +90,9 @@ class CrudGenerator extends Command
                 'text',
                 'foreignId',
                 'image',
-                'file'
+                'file',
+                'date',
+                'datetime'
             ],
             0
         );
@@ -119,7 +122,9 @@ class CrudGenerator extends Command
         $bar->start();
         foreach ($generators as $component => $generator) {
             $bar->setMessage("Generating $component...");
-            $generator->create($modelName, $fields);
+            if ($component == 'Migration') {
+                $this->migrationName = $generator->create($modelName, $fields);
+            }
             $bar->advance();
             usleep(200000);
         }
@@ -138,7 +143,7 @@ class CrudGenerator extends Command
             'Update Request' => app_path("Http/Requests/Update{$modelName}Request.php"),
             'Resource' => app_path("Http/Resources/{$modelName}Resource.php"),
             'Controller' => app_path("Http/Controllers/{$modelName}Controller.php"),
-            'Migration' => database_path("migrations/{$this->getMigrationFileName($modelName)}"),
+            'Migration' => database_path("migrations/{$this->migrationName}"),
         ];
         $this->table(
             ['Component', 'Path'],

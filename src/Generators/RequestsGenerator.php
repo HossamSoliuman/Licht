@@ -50,6 +50,10 @@ class RequestsGenerator
                 $fieldRules = ['file', 'mimes:pdf,doc,docx,xls,xlsx'];
             } elseif ($fieldType === 'string') {
                 $fieldRules = ['string', 'max:255'];
+            } elseif ($fieldType === 'date') {
+                $fieldRules[] = 'date';
+            } elseif ($fieldType === 'datetime') {
+                $fieldRules[] = 'date_format:Y-m-d H:i:s';
             } else {
                 $fieldRules[] = "{$fieldType}";
             }
@@ -66,6 +70,7 @@ class RequestsGenerator
 
         return $rules;
     }
+
 
 
 
