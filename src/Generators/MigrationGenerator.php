@@ -23,6 +23,8 @@ class MigrationGenerator
         foreach ($fields as $fieldName => $fieldType) {
             if ($fieldType === 'foreignId') {
                 $fieldDefinitions .= "\t\t\t\$table->{$fieldType}('{$fieldName}')->constrained()->cascadeOnDelete();";
+            } elseif (Str::contains($fieldType, ['file', 'image'])) {
+                $fieldDefinitions .= "\t\t\t\$table->string('{$fieldName}');";
             } else {
                 $fieldDefinitions .= "\t\t\t\$table->{$fieldType}('{$fieldName}');";
             }

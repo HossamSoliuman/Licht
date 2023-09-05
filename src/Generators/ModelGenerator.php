@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 class ModelGenerator
 {
     public function create($model, $fields)
-    {
+    { 
         $stub = file_get_contents(__DIR__ . '/../mystubs/model.stub');
         $fileName = $model . '.php';
 
@@ -44,11 +44,29 @@ class ModelGenerator
             }
         }
 
+        //model/type/name
+
+        $storedFilesPath = $this->generateFilesPath($model, $fields);
+
+        $stub = str_replace('{{ stored files path }}', $storedFilesPath, $stub);
         $stub = str_replace('{{ fields }}', $fillables, $stub);
         $stub = str_replace('{{ relations }}', $relations, $stub);
 
         $path = app_path("Models/{$fileName}");
         file_put_contents($path, $stub);
         return $fileName;
+    }
+    public function generateFilesPath($model, $fields)
+    {
+        $modelFolder = Str::camel($model);
+        $storedFilesPath = null;
+        foreach ($fields as $name => $type) {
+            $name = Str::plural($name);
+            $TypeName = Str::ucfirst($type);
+            if (Str::contains($type, ['file','image'])) {
+                $storedFilesPath .= "const PathToStored{$TypeName}s='{$modelFolder}/{$type}s/{$name}';";
+            }
+        }
+        return $storedFilesPath;
     }
 }

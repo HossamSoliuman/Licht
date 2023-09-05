@@ -88,6 +88,8 @@ class CrudGenerator extends Command
                 'integer',
                 'text',
                 'foreignId',
+                'image',
+                'file'
             ],
             0
         );
@@ -106,15 +108,30 @@ class CrudGenerator extends Command
             'Migration' => new MigrationGenerator,
         ];
 
-        foreach ($generators as $generator) {
+        $totalSteps = count($generators);
+        $bar = $this->output->createProgressBar($totalSteps);
+
+        // Customize the progress bar style
+        $bar->setBarWidth(50);
+        $bar->setBarCharacter('<comment>=</comment>');
+        $bar->setEmptyBarCharacter('-');
+        $bar->setProgressCharacter('<info>></info>');
+        $bar->start();
+        foreach ($generators as $component => $generator) {
+            $bar->setMessage("Generating $component...");
             $generator->create($modelName, $fields);
+            $bar->advance();
+            usleep(200000);
         }
+        $bar->setMessage("All components generated!");
+        $bar->finish();
+        sleep(1);
     }
+
 
     protected function displayGeneratedFiles($modelName)
     {
         $this->info("\nGenerated files for {$modelName}:");
-
         $generators = [
             'Model' => app_path("Models/{$modelName}.php"),
             'Store Request' => app_path("Http/Requests/Store{$modelName}Request.php"),
@@ -123,7 +140,6 @@ class CrudGenerator extends Command
             'Controller' => app_path("Http/Controllers/{$modelName}Controller.php"),
             'Migration' => database_path("migrations/{$this->getMigrationFileName($modelName)}"),
         ];
-
         $this->table(
             ['Component', 'Path'],
             collect($generators)->map(function ($path, $component) {

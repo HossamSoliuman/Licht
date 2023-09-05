@@ -30,20 +30,35 @@ class RequestsGenerator
         file_put_contents($updatePath, $updateStub);
         return ['storeFile' => $storeClass, 'updateFile' => $updateClass];
     }
-
     private function generateRules($fields, $requiredOrNullable)
     {
         $rules = '';
         $lastField = array_key_last($fields);
+
         foreach ($fields as $fieldName => $fieldType) {
+            $fieldRules = [];
+
             if ($fieldType === 'foreignId') {
                 $table = $this->getForeignKeyTable($fieldName);
-                $rules .= "\t\t\t'{$fieldName}' => '{$requiredOrNullable}|integer|exists:{$table},id',";
+                $fieldRules[] = 'integer';
+                $fieldRules[] = "exists:{$table},id";
             } elseif ($fieldType === 'text') {
-                $rules .= "\t\t\t'{$fieldName}' => '{$requiredOrNullable}|string',";
+                $fieldRules[] = 'string';
+            } elseif ($fieldType === 'image') {
+                $fieldRules = ['file', 'image', 'mimes:jpeg,png,jpg,gif'];
+            } elseif ($fieldType === 'file') {
+                $fieldRules = ['file', 'mimes:pdf,doc,docx,xls,xlsx'];
+            } elseif ($fieldType === 'string') {
+                $fieldRules = ['string', 'max:255'];
             } else {
-                $rules .= "\t\t\t'{$fieldName}' => '{$requiredOrNullable}|{$fieldType}',";
+                $fieldRules[] = "{$fieldType}";
             }
+
+            $fieldRules[] = "{$requiredOrNullable}";
+            $rules .= "\t\t\t'{$fieldName}' => [" . implode(', ', array_map(function ($rule) {
+                return "'$rule'";
+            }, $fieldRules)) . "],";
+
             if ($fieldName !== $lastField) {
                 $rules .= "\n";
             }
@@ -51,6 +66,10 @@ class RequestsGenerator
 
         return $rules;
     }
+
+
+
+
 
     public function getForeignKeyTable($foreignKey)
     {

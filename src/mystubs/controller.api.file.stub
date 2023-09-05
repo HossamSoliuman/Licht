@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\{{ model }};
+use App\Http\Requests\Store{{ model }}Request;
+use App\Http\Requests\Update{{ model }}Request;
+use App\Http\Resources\{{ model }}Resource;
+
+class {{ model }}Controller extends Controller
+{
+    public function index()
+    {
+        ${{ modelVariable }}s = {{ model }}::all();
+        return $this->successResponse({{ model }}Resource::collection(${{ modelVariable }}s));
+    }
+
+    public function store(Store{{ model }}Request $request)
+    {
+        $validData = $request->validated();{{ store }}
+        ${{ modelVariable }} = {{ model }}::create($validData);
+        return $this->successResponse({{ model }}Resource::make(${{ modelVariable }}));
+    }
+
+    public function show({{ model }} ${{ modelVariable }})
+    {
+        return $this->successResponse({{ model }}Resource::make(${{ modelVariable }}));
+    }
+
+    public function update(Update{{ model }}Request $request, {{ model }} ${{ modelVariable }})
+    {
+        $validData = $request->validated();{{ update }}
+        ${{ modelVariable }}->update($validData);
+        return $this->successResponse({{ model }}Resource::make(${{ modelVariable }}));
+    }
+
+    public function destroy({{ model }} ${{ modelVariable }})
+    {{{ delete }}
+        ${{ modelVariable }}->delete();
+        return $this->deletedResponse();
+    }
+}
