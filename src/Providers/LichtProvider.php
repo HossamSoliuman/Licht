@@ -19,5 +19,8 @@ class LichtProvider extends ServiceProvider
                 CrudGenerator::class,
             ]);
         }
+        $this->publishes([
+            __DIR__ . '/../Controllers/LichtBaseController.php' => app_path('Http/Controllers/LichtBaseController.php'),
+        ], 'licht-base-controller');
     }
 }
