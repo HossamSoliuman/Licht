@@ -21,7 +21,11 @@ class MigrationGenerator
         $lastField = array_key_last($fields);
         foreach ($fields as $fieldName => $fieldType) {
             $fieldMethod = $this->getFieldMethod($fieldType);
-            $fieldDefinitions .= "\t\t\t\$table->{$fieldMethod}('{$fieldName}');";
+            if ($fieldMethod == 'foreignId') {
+                $fieldDefinitions .= "\t\t\t\$table->{$fieldMethod}('{$fieldName}')->constrained()->cascadeOnDelete();;";
+            } else {
+                $fieldDefinitions .= "\t\t\t\$table->{$fieldMethod}('{$fieldName}');";
+            }
             if ($fieldName !== $lastField) {
                 $fieldDefinitions .= "\n";
             }
