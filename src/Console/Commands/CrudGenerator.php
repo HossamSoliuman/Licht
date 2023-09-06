@@ -124,6 +124,8 @@ class CrudGenerator extends Command
             $bar->setMessage("Generating $component...");
             if ($component == 'Migration') {
                 $this->migrationName = $generator->create($modelName, $fields);
+            } else {
+                $generator->create($modelName, $fields);
             }
             $bar->advance();
             usleep(200000);
