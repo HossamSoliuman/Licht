@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class CrudGenerator extends Command
 {
-    protected $signature = 'licht:crud {model}';
+    protected $signature = 'licht {model?}';
     protected $description = 'Generate CRUD operations for a model';
     protected $migrationName;
 
@@ -29,18 +29,28 @@ class CrudGenerator extends Command
 
         $this->displayGeneratedFiles($modelName);
     }
-
     protected function getModelName()
     {
-        $modelName = ucfirst($this->argument('model'));
+        $modelName = $this->argument('model');
 
-        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $modelName)) {
-            $this->error('Invalid model name. Model names should start with a capital letter and contain only letters.');
-            exit(1);
+        if (!$modelName) {
+            $modelName = $this->ask('Enter the model name');
+            $modelName = ucfirst($modelName);
+            if (!preg_match('/^[A-Z][a-zA-Z]*$/', $modelName)) {
+                $this->error('Invalid model name. Model names should contain only letters.');
+                $this->getModelName();
+            }
+        } else {
+            $modelName = ucfirst($modelName);
+            if (!preg_match('/^[A-Z][a-zA-Z]*$/', $modelName)) {
+                $this->error('Invalid model name. Model names should contain only letters.');
+                $this->getModelName();
+            }
         }
 
         return $modelName;
     }
+
 
     protected function gatherFields()
     {
