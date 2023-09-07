@@ -98,10 +98,21 @@ class CrudGenerator extends Command
         );
         return $this->choice($question->getQuestion(), $question->getChoices(), 0);
     }
+    // ...
 
     protected function generateCrudComponents($modelName, $fields)
     {
         $this->info("Generating CRUD components for {$modelName}...");
+
+        $requestsDirectory = app_path('Http/Requests');
+        if (!file_exists($requestsDirectory)) {
+            mkdir($requestsDirectory, 0755, true);
+        }
+
+        $resourcesDirectory = app_path('Http/Resources');
+        if (!file_exists($resourcesDirectory)) {
+            mkdir($resourcesDirectory, 0755, true);
+        }
 
         $generators = [
             'Model' => new ModelGenerator,
@@ -114,12 +125,12 @@ class CrudGenerator extends Command
         $totalSteps = count($generators);
         $bar = $this->output->createProgressBar($totalSteps);
 
-        // Customize the progress bar style
         $bar->setBarWidth(50);
         $bar->setBarCharacter('<comment>=</comment>');
         $bar->setEmptyBarCharacter('-');
         $bar->setProgressCharacter('<info>></info>');
         $bar->start();
+
         foreach ($generators as $component => $generator) {
             $bar->setMessage("Generating $component...");
             if ($component == 'Migration') {
@@ -128,12 +139,15 @@ class CrudGenerator extends Command
                 $generator->create($modelName, $fields);
             }
             $bar->advance();
-            usleep(200000);
+            usleep(30000);
         }
+
         $bar->setMessage("All components generated!");
         $bar->finish();
         sleep(1);
     }
+
+    //
 
 
     protected function displayGeneratedFiles($modelName)
