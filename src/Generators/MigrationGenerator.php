@@ -45,6 +45,7 @@ class MigrationGenerator
             'image' => 'string',
             'file' => 'string',
             'date' => 'date',
+            'json' => 'json',
             'datetime' => 'dateTime',
         ];
 

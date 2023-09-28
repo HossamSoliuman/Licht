@@ -55,7 +55,7 @@ These components will be placed in the appropriate directories within your Larav
 | Customizable CRUD templates                                                                     | 🔜 Coming Soon  |
 | Create CRUD for multiple models at once                                                          | 🔜 Coming Soon  |
 | Extensive documentation and examples                                                             | 🔜 Coming Soon  |
-| Add json type field                                                           | 🔜 Coming Soon  |
+| Add json type field                                                           | ✅ Done |
 
 
 

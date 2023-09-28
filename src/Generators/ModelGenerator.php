@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 class ModelGenerator
 {
     public function create($model, $fields)
-    { 
+    {
         $stub = file_get_contents(__DIR__ . '/../mystubs/model.stub');
         $fileName = $model . '.php';
 
@@ -15,6 +15,7 @@ class ModelGenerator
 
         $fillables = '';
         $relations = '';
+        $jsonType = '';
         $lastField = array_key_last($fields);
         foreach ($fields as $fieldName => $fieldType) {
             $fillables .= "\t\t\t'{$fieldName}',";
@@ -41,6 +42,15 @@ class ModelGenerator
                     $relations .= "\n\tpublic function {$parentMethod}(){\n\t\treturn \$this->belongsTo({$parent}::class);\n\t}";
                 }
             }
+            if ($fieldType == 'json') {
+                $useAttribute = 'use Illuminate\Database\Eloquent\Casts\Attribute;';
+                $stub = str_replace('{{ use Attribute }}', $useAttribute, $stub);
+
+                $method_name = Str::camel($fieldName);
+                $jsonMethod = "\n\tprotected function $method_name(): Attribute\n\t{\n\t\treturn Attribute::make(\n\t\t\tget: fn (\$value) => json_decode(\$value, true),\n\t\t\tset: fn (\$value) => json_encode(\$value),\n\t\t);\n\t}";
+
+                $jsonType .= $jsonMethod;
+            }
         }
 
         //model/type/name
@@ -50,6 +60,7 @@ class ModelGenerator
         $stub = str_replace('{{ stored files path }}', $storedFilesPath, $stub);
         $stub = str_replace('{{ fields }}', $fillables, $stub);
         $stub = str_replace('{{ relations }}', $relations, $stub);
+        $stub = str_replace('{{ jsonMethod }}', $jsonType, $stub);
 
         $path = app_path("Models/{$fileName}");
         file_put_contents($path, $stub);
@@ -62,7 +73,7 @@ class ModelGenerator
         foreach ($fields as $name => $type) {
             $name = Str::plural($name);
             $TypeName = Str::ucfirst($type);
-            if (Str::contains($type, ['file','image'])) {
+            if (Str::contains($type, ['file', 'image'])) {
                 $storedFilesPath .= "const PathToStored{$TypeName}s='{$modelFolder}/{$type}s/{$name}';";
             }
         }

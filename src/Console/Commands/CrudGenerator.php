@@ -102,7 +102,9 @@ class CrudGenerator extends Command
                 'image',
                 'file',
                 'date',
-                'datetime'
+                'datetime',
+                'json'
+                
             ],
             0
         );

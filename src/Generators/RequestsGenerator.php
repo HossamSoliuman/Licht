@@ -54,6 +54,8 @@ class RequestsGenerator
                 $fieldRules[] = 'date';
             } elseif ($fieldType === 'datetime') {
                 $fieldRules[] = 'date_format:Y-m-d H:i:s';
+            } elseif ($fieldType === 'json') {
+                $fieldRules[] = 'array';
             } else {
                 $fieldRules[] = "{$fieldType}";
             }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+{{ use Attribute }}
 
 
 class {{ class }} extends Model
@@ -13,6 +14,7 @@ class {{ class }} extends Model
     protected $fillable=[
 {{ fields }}
     ];
+{{ jsonMethod }}
 
 {{ relations }}
 }
