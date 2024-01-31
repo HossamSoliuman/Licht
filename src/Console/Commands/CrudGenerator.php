@@ -7,6 +7,7 @@ use Hossam\Licht\Generators\ControllerGenerator;
 use Hossam\Licht\Generators\MigrationGenerator;
 use Hossam\Licht\Generators\ModelGenerator;
 use Hossam\Licht\Generators\RequestsGenerator;
+use Hossam\Licht\Generators\ViewGenerator;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Illuminate\Support\Str;
@@ -104,7 +105,6 @@ class CrudGenerator extends Command
                 'date',
                 'datetime',
                 'json'
-                
             ],
             0
         );
@@ -132,6 +132,7 @@ class CrudGenerator extends Command
             'Resource' => new ResourceGenerator,
             'Controller' => new ControllerGenerator,
             'Migration' => new MigrationGenerator,
+            'View' => new ViewGenerator,
         ];
 
         $totalSteps = count($generators);
@@ -164,6 +165,8 @@ class CrudGenerator extends Command
 
     protected function displayGeneratedFiles($modelName)
     {
+        $pluralModelName = Str::plural($modelName);
+        $fileName = strtolower($pluralModelName) . '.blade.php';
         $this->info("\nGenerated files for {$modelName}:");
         $generators = [
             'Model' => app_path("Models/{$modelName}.php"),
@@ -172,6 +175,7 @@ class CrudGenerator extends Command
             'Resource' => app_path("Http/Resources/{$modelName}Resource.php"),
             'Controller' => app_path("Http/Controllers/{$modelName}Controller.php"),
             'Migration' => database_path("migrations/{$this->migrationName}"),
+            'View' =>  resource_path("views/{$fileName}"),
         ];
         $this->table(
             ['Component', 'Path'],
