@@ -2,6 +2,7 @@
 
 namespace Hossam\Licht\Console\Commands;
 
+use Hossam\Licht\Generators\controllerFullstackGenerator;
 use Hossam\Licht\Generators\ResourceGenerator;
 use Hossam\Licht\Generators\ControllerGenerator;
 use Hossam\Licht\Generators\MigrationGenerator;
@@ -130,7 +131,7 @@ class CrudGenerator extends Command
             'Model' => new ModelGenerator,
             'Requests' => new RequestsGenerator,
             'Resource' => new ResourceGenerator,
-            'Controller' => new ControllerGenerator,
+            'Controller' => new controllerFullstackGenerator,
             'Migration' => new MigrationGenerator,
             'View' => new ViewGenerator,
         ];

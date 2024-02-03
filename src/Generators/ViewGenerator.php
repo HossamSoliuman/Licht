@@ -3,9 +3,11 @@
 namespace Hossam\Licht\Generators;
 
 use Illuminate\Support\Str;
+use Hossam\Licht\Traits\Helper;
 
 class ViewGenerator
 {
+    use Helper;
     public function create($model, $items)
     {
         $modelName = Str::singular($model);
@@ -28,28 +30,57 @@ class ViewGenerator
         $stub = str_replace('{{ $model }}', $modelSmall, $stub);
         $stub = str_replace('{{ $Models }}', $Models, $stub);
         $stub = str_replace('{{ $models }}', $models, $stub);
-        $stub = str_replace('{{ $items }}', $this->generateItemsList($items, $modelName), $stub);
+        $stub = str_replace('{{ $formFields }}', $this->formFields($items, $modelName), $stub);
+        $stub = str_replace('{{ $tableHeader }}', $this->tableHeadr($items, $modelName), $stub);
+        $stub = str_replace('{{ $tableBody }}', $this->tableBody($items, $modelName), $stub);
+        $stub = str_replace('{{ $jsFields }}', $this->jsFields($items, $modelName), $stub);
         return $stub;
     }
 
-    private function generateItemsList($items, $modelName)
+
+    public function formFields($fields, $model)
     {
-        $list = '';
-        foreach ($items as $item) {
-            $list .= "\t\t\t\t\t\t<tr data-{{ $modelName }}-id=\"{{ \${$modelName}->id }}\">\n";
-            $list .= "\t\t\t\t\t\t\t<td class=\"{{ $modelName }}-name\">{{ \${$modelName}->name }}</td>\n";
-            $list .= "\t\t\t\t\t\t\t<td class=\"d-flex\">\n";
-            $list .= "\t\t\t\t\t\t\t\t<button type=\"button\" class=\"btn btn-warning btn-edit\" data-toggle=\"modal\" data-target=\"#editModal\">\n";
-            $list .= "\t\t\t\t\t\t\t\t\tEdit\n";
-            $list .= "\t\t\t\t\t\t\t\t</button>\n";
-            $list .= "\t\t\t\t\t\t\t\t<form action=\"{{ route('{$modelName}.destroy', ['{$modelName}' => \${$modelName}->id]) }}\" method=\"post\">\n";
-            $list .= "\t\t\t\t\t\t\t\t\t@csrf\n";
-            $list .= "\t\t\t\t\t\t\t\t\t@method('DELETE')\n";
-            $list .= "\t\t\t\t\t\t\t\t\t<button type=\"submit\" class=\"ml-3 btn btn-danger\">Delete</button>\n";
-            $list .= "\t\t\t\t\t\t\t\t</form>\n";
-            $list .= "\t\t\t\t\t\t\t</td>\n";
-            $list .= "\t\t\t\t\t\t</tr>\n";
+        $lines = '';
+        foreach ($fields as $fieldName => $fieldType) {
+            $lines .= "\n\t\t\t\t\t\t\t\t\t" . '<div class="form-group">' . "\n";
+            $lines .= "\t\t\t\t\t\t\t\t\t\t" . '<input type="text" name="' . $fieldName . '" class="form-control" placeholder="' . $model . ' ' . $fieldName . '" required>' . "\n";
+            $lines .= "\t\t\t\t\t\t\t\t\t" . '</div>';
         }
-        return $list;
+        return $lines;
+    }
+    public function tableHeadr($fields, $model)
+    {
+        $lines = '';
+        foreach ($fields as $fieldName => $fieldType) {
+            $fieldName = $this->wordCase($fieldName, 'Model');
+            $lines .= "\n\t\t\t\t\t\t\t" . '<th> ' . $fieldName . '</th>';
+        }
+        return $lines;
+    }
+    public function tableBody($fields, $model)
+    {
+        $lines = '';
+        $model = $this->wordCase($model, 'model');
+        foreach ($fields as $fieldName => $fieldType) {
+            $lines .= "\n\t\t\t\t\t\t\t" . '<td class=" ' . $model . '-' . $fieldName . '">{{ $' . $model . '->' . $fieldName . ' }}</td>';
+        }
+        return $lines;
+    }
+    public function jsFields($fields, $model)
+    {
+
+        // var PostName = $(this).closest("tr").find(".post-name").text();
+        // $('#editModal input[name="name"]').val(PostName);
+        $model = $this->wordCase($model, 'Model');
+        $modelSmall = $this->wordCase($model, 'model');
+        $lines = '';
+        foreach ($fields as $fieldName => $fieldType) {
+            $fieldName = $this->wordCase($fieldName, 'Model');
+            $fieldNameSmall = $this->wordCase($fieldName, 'model');
+
+            $lines .= "\n\t\t\t\t" . 'var ' . $model . $fieldName . ' = $(this).closest("tr").find(".' . $modelSmall . '-' . $fieldNameSmall . '").text();';
+            $lines .= "\n\t\t\t\t" . "$('#editModal input[name=" . '"' . $fieldNameSmall . '"' . "]').val(" . $model . $fieldName . ');';
+        }
+        return $lines;
     }
 }

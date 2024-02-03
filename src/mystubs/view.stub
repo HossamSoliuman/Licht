@@ -21,11 +21,7 @@
                             </div>
                             <div class="modal-body">
                                 <form action="{{ route('{{ $models }}.store') }}" method="post">
-                                    @csrf
-                                    <div class="form-group">
-                                        <input type="text" name="name" class="form-control"
-                                            placeholder="{{ $modelName }} Name" required>
-                                    </div>
+                                    @csrf{{ $formFields }}
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -49,10 +45,7 @@
                             <div class="modal-body">
                                 <form id="editForm" method="post">
                                     @csrf
-                                    @method('PUT')
-                                    <div class="form-group">
-                                        <input type="text" name="name" class="form-control" required>
-                                    </div>
+                                    @method('PUT')@csrf{{ $formFields }}
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -65,15 +58,13 @@
 
                 <table class="table">
                     <thead>
-                        <tr>
-                            <th>{{ $modelName }} Name</th>
+                        <tr>{{ $tableHeader }}
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                        @foreach (${{ $models }} as ${{ $model }})
-                            <tr data-{{ $model }}-id="{{ ${{ $model }}->id }}">
-                                <td class="{{ $model }}-name">{{ ${{ $model }}->name }}</td>
+                            <tr data-{{ $model }}-id="{{ ${{ $model }}->id }}">{{ $tableBody }}
                                 <td class="d-flex">
                                     <button type="button" class="btn btn-warning btn-edit" data-toggle="modal"
                                         data-target="#editModal">
@@ -95,11 +86,9 @@
     </div>
     <script>
         $(document).ready(function() {
-            $('.btn-edit').on('click', function() {
-                var {{ $modelName }}Name = $(this).closest('tr').find('.{{ $model }}-name').text();
-                $('#editModal input[name="name"]').val({{ $modelName }}Name);
+            $('.btn-edit').on('click', function() {{{ $jsFields }}
                 var {{ $modelName }}Id = $(this).closest('tr').data('{{ $model }}-id');
-                $('#editForm').attr('action', '/categories/' + {{ $modelName }}Id);
+                $('#editForm').attr('action', '/{{ $models }}/' + {{ $modelName }}Id);
                 $('#editModal').modal('show');
             });
             $('#saveChangesBtn').on('click', function() {
