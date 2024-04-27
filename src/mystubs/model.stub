@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+{{ use Attribute }}
 
 
 class {{ class }} extends Model
 {
     use HasFactory;
-    {{ stored files path }}
+{{ stored files path }}
     protected $fillable=[
-{{ fields }}
+{{ fillables }}
     ];
 {{ jsonMethod }}
 

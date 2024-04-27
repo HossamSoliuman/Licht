@@ -1,4 +1,5 @@
 <?php
+
 namespace Hossam\Licht\Traits;
 
 use Illuminate\Http\JsonResponse;
@@ -9,14 +10,15 @@ trait Helper
     public function wordCase($word, $case)
     {
         $cammel = Str::camel($word);
-        // model Models ModelNames modelNames model-names
         $cases = [
             'model' => lcfirst($word),
             'Model' => ucfirst($word),
-            'modelName' => $cammel,
-            'models' => Str::plural($cammel),
-            'Models' => ucfirst(Str::plural($word)),
+            'ModelName' =>  ucfirst($cammel),
+            'modelName' =>  $cammel,
+            'modelNames' => Str::plural($cammel),
+            'ModelNames' => ucfirst(Str::plural($cammel)),
             'model-names' => Str::plural(Str::kebab($word)),
+            'model-name' => Str::kebab($word),
         ];
 
         return $cases[$case] ?? null;

@@ -12,9 +12,11 @@ use Hossam\Licht\Generators\ViewGenerator;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Illuminate\Support\Str;
+use Hossam\Licht\Traits\Helper;
 
 class CrudGenerator extends Command
 {
+    use Helper;
     protected $signature = 'licht {model?}';
     protected $description = 'Generate CRUD operations for a model';
     protected $migrationName;
@@ -37,13 +39,13 @@ class CrudGenerator extends Command
 
         if (!$modelName) {
             $modelName = $this->ask('Enter the model name');
-            $modelName = ucfirst($modelName);
+            $modelName = $this->wordCase($modelName, 'ModelName');
             if (!preg_match('/^[A-Z][a-zA-Z]*$/', $modelName)) {
                 $this->error('Invalid model name. Model names should contain only letters.');
                 $this->getModelName();
             }
         } else {
-            $modelName = ucfirst($modelName);
+            $modelName = $this->wordCase($modelName, 'ModelName');
             if (!preg_match('/^[A-Z][a-zA-Z]*$/', $modelName)) {
                 $this->error('Invalid model name. Model names should contain only letters.');
                 $this->getModelName();

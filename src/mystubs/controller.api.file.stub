@@ -12,32 +12,29 @@ class {{ model }}Controller extends LichtBaseController
 {
     public function index()
     {
-        ${{ modelVariable }}s = {{ model }}::all();
-        return $this->successResponse({{ model }}Resource::collection(${{ modelVariable }}s));
+        ${{ models }} = {{ model }}::all();
+        ${{ models }} = {{ model }}Resource::collection(${{ models }});
+        return view('{{ models }}', compact('{{ models }}'));
     }
+
 
     public function store(Store{{ model }}Request $request)
     {
         $validData = $request->validated();{{ store }}
         ${{ modelVariable }} = {{ model }}::create($validData);
-        return $this->successResponse({{ model }}Resource::make(${{ modelVariable }}));
-    }
-
-    public function show({{ model }} ${{ modelVariable }})
-    {
-        return $this->successResponse({{ model }}Resource::make(${{ modelVariable }}));
+        return redirect()->route('{{ model-names }}.index');
     }
 
     public function update(Update{{ model }}Request $request, {{ model }} ${{ modelVariable }})
     {
         $validData = $request->validated();{{ update }}
         ${{ modelVariable }}->update($validData);
-        return $this->successResponse({{ model }}Resource::make(${{ modelVariable }}));
+        return redirect()->route('{{ model-names }}.index');
     }
 
     public function destroy({{ model }} ${{ modelVariable }})
     {{{ delete }}
         ${{ modelVariable }}->delete();
-        return $this->deletedResponse();
+        return redirect()->route('{{ model-names }}.index');
     }
 }

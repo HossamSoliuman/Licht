@@ -4,7 +4,7 @@
         <div class="row justify-content-center mt-5">
             <div class="col-md-11">
                 <h1>{{ $pluralModelName }}</h1>
-                <button type="button" class=" mb-3 btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
+                <button type="button" class="mb-3 rounded btn btn-sm btn-dark" data-toggle="modal" data-target="#staticBackdrop">
                     Create a new {{ $modelName }}
                 </button>
 
@@ -20,12 +20,12 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="{{ route('{{ $models }}.store') }}" method="post">
+                                <form action="{{ route('{{ $models }}.store') }}" method="post" enctype="multipart/form-data">
                                     @csrf{{ $formFields }}
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn rounded btn-sm btn-light">Submit</button>
+                                <button type="button" class="btn rounded btn-sm btn-dark" data-dismiss="modal">Close</button>
                                 </form>
                             </div>
                         </div>
@@ -43,14 +43,14 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form id="editForm" method="post">
+                                <form id="editForm" method="post" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')@csrf{{ $formFields }}
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn rounded btn-sm btn-light" id="saveChangesBtn">Save Changes</button>
+                                <button type="button" class="btn rounded btn-sm btn-dark" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                        @foreach (${{ $models }} as ${{ $model }})
                             <tr data-{{ $model }}-id="{{ ${{ $model }}->id }}">{{ $tableBody }}
                                 <td class="d-flex">
-                                    <button type="button" class="btn btn-warning btn-edit" data-toggle="modal"
+                                    <button type="button" class="btn rounded btn-sm btn-light btn-edit" data-toggle="modal"
                                         data-target="#editModal">
                                         Edit
                                     </button>
@@ -74,7 +74,7 @@
                                         method="post">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class=" ml-3 btn btn-danger">Delete</button>
+                                        <button type="submit" class="ml-3 rounded btn btn-sm btn-dark">Delete</button>
                                     </form>
                                 </td>
                             </tr>

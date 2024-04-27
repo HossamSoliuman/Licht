@@ -11,11 +11,10 @@ class controllerFullstackGenerator
     public function create($model, $fields)
     {
         $modelVariable = Str::camel($model);
-        $models = $this->wordCase($modelVariable, 'models');
+        $models = $this->wordCase($modelVariable, 'modelNames');
         $model_names = $this->wordCase($modelVariable, 'model-names');
         $fileName = $model . 'Controller.php';
 
-        // Determine if the model has file upload fields
         $hasFiles = $this->hasFiles($fields);
 
         if ($hasFiles) {
@@ -24,13 +23,13 @@ class controllerFullstackGenerator
             $stub = file_get_contents(__DIR__ . '/../mystubs/controller.fullstack.stub');
         }
 
-        // Replace placeholders in the stub with actual values
         $stub = str_replace('{{ model }}', $model, $stub);
         $stub = str_replace('{{ modelVariable }}', $modelVariable, $stub);
         $stub = str_replace('{{ models }}', $models, $stub);
         $stub = str_replace('{{ model-names }}', $model_names, $stub);
 
-        // Save the generated controller file
+
+
         $path = app_path("Http/Controllers/{$fileName}");
         file_put_contents($path, $stub);
 
